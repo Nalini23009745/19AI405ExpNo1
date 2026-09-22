@@ -48,40 +48,53 @@
 import random
 
 class MedicineAgent:
+
     def __init__(self):
         self.location = "Room A"
         self.performance = 0
 
     def act(self, environment):
-        temp = environment[self.location]["temperature"]
-        if temp > 98.5:
-            print(f"Patient in {self.location} unhealthy ({temp:.1f}°F). Giving medicine.")
+
+        temperature = environment[self.location]
+
+        # Perceive and act
+        if temperature > 98.5:
+            print(self.location, "Temperature:", temperature)
+            print("Patient is unhealthy. Giving medicine.")
             self.performance += 10
-            environment[self.location]["temperature"] = 98.0
+            environment[self.location] = 98.0
+
         else:
-            print(f"Patient in {self.location} healthy ({temp:.1f}°F).")
-        self.location = "Room B" if self.location == "Room A" else "Room A"
+            print(self.location, "Temperature:", temperature)
+            print("Patient is healthy.")
+
+        # Move to another room
+        if self.location == "Room A":
+            self.location = "Room B"
+        else:
+            self.location = "Room A"
+
         self.performance -= 1
-        print(f"Moving to {self.location}. Performance: {self.performance}")
+
+        print("Moving to:", self.location)
+        print("Performance:", self.performance)
         print("-" * 30)
 
-def main():
-    environment = {
-        "Room A": {"temperature": random.uniform(97.0, 102.0)},
-        "Room B": {"temperature": random.uniform(97.0, 102.0)}
-    }
-    agent = MedicineAgent()
-    print("Starting simulation.")
-    print("-" * 30)
-    for step in range(5):
-        print(f"--- Step {step + 1} ---")
-        agent.act(environment)
-        random_room = random.choice(["Room A", "Room B"])
-        environment[random_room]["temperature"] = random.uniform(99.0, 103.0)
-    print("Simulation finished.")
 
-if __name__ == "__main__":
-    main()
+# Environment
+environment = {
+    "Room A": random.uniform(97, 102),
+    "Room B": random.uniform(97, 102)
+}
+
+agent = MedicineAgent()
+
+print("AI Medicine Agent")
+print("-" * 30)
+
+for i in range(5):
+    print("Step", i + 1)
+    agent.act(environment)
 ```
 
 ## Output:
